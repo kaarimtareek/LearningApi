@@ -11,7 +11,8 @@ the main features:
   - logging
   - logging middlewares
   - DTOs
-  
+  - mapping using automapper (from entities to dtos and vice versa)
+  - sql server database
 the upcoming features:
   - supports error and success codes
   - add put verb for updating entities
