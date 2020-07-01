@@ -37,7 +37,9 @@ namespace Learning.Api.Controllers
                 var coursesDto = _mapper.Map<IEnumerable<CourseDto>>(successOperation.Result.ListData);
                 var operationReturn = new SuccessOperationResult<IEnumerable<CourseDto>>
                 {
-                    Result = coursesDto
+                    Result = coursesDto,
+                    Code = successOperation.Code,
+
                 };
                 return Ok(operationReturn);
             }
@@ -56,7 +58,9 @@ namespace Learning.Api.Controllers
                 var courseDto = _mapper.Map<CourseDto>(successOperation.Result);
                 var operationResult = new SuccessOperationResult<CourseDto>
                 {
-                    Result = courseDto
+                    Result = courseDto,
+                    Code = successOperation.Code,
+
                 };
 
                 return Ok(operationResult);
@@ -78,7 +82,9 @@ namespace Learning.Api.Controllers
                 var courseDto = _mapper.Map<CourseDto>(successOperation.Result);
                 var operationReturn = new SuccessOperationResult<CourseDto>
                 {
-                    Result = courseDto
+                    Result = courseDto,
+                    Code = successOperation.Code,
+
                 };
                 return Ok(operationReturn);
             }

@@ -42,7 +42,7 @@ namespace Learning.Api.Controllers
                 var operationReturn = new SuccessOperationResult<AuthorDto>
                 {
                     Result = authorDto,
-
+                    Code = successOperation.Code,
                 };
                 return Ok(operationReturn);
             }
@@ -70,7 +70,9 @@ namespace Learning.Api.Controllers
                     Response.Headers.Add("paginationMetaData", JsonConvert.SerializeObject(paginationMetaData));
                     var operationReturn = new SuccessOperationResult<IEnumerable<AuthorDto>>
                     {
-                        Result = mappingResult
+                        Result = mappingResult,
+                        Code = successOperation.Code,
+
                     };
                     return Ok(operationReturn);
                 }else
