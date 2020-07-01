@@ -18,6 +18,7 @@ namespace DTOs.Profiles
                 .ForMember(m => m.Age,
                 options => options.MapFrom(author => FromDateToAge.ConvertDate(author.DateOfBirth))).ReverseMap();
             CreateMap<CreateAuthorDto, Author>().ReverseMap();
+            CreateMap<UpdateAuthorDto, Author>().ReverseMap();
 
         }
     }

@@ -3,6 +3,7 @@ using DTOs.AuthorDTOs;
 using DTOs.CourseDTOs;
 using DTOs.QueryParamters;
 using Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.CompiledQueries;
 using Services.FilterationService;
@@ -354,6 +355,81 @@ namespace Services.CourseLibraryService
                     return new FailedOperationResult<Author> 
                     { 
                         Code = ConstOperationCodes.FAILED_OPERATION
+                    };
+                }
+            }
+        }
+
+        public async Task<OperationResult<Author>> UpdateAuthor(Author author)
+        {
+          using (CourseLibraryContext context = new CourseLibraryContext (options))
+            {
+                try
+                {
+                    var resultAuthor = await context.Authors.SingleOrDefaultAsync(a => a.Id == author.Id);
+                    if (resultAuthor == null)
+                    {
+                        return new FailedOperationResult<Author>
+                        {
+                            Code = ConstOperationCodes.AUTHOR_NOT_FOUND,
+                        };
+                    }
+
+                    context.Authors.Update(author);
+                    await context.SaveChangesAsync();
+                    return new SuccessOperationResult<Author>
+                    {
+                        Code = ConstOperationCodes.AUTHOR_UPDATED,
+                        Result = author,
+                    };
+                }
+                catch(Exception e)
+                {
+                    logger.Error($"error in update author {e.Message}");
+                    return new FailedOperationResult<Author>
+                    {
+                        Code = ConstOperationCodes.FAILED_OPERATION
+                    };
+                }
+              
+            }
+        }
+        public async Task<OperationResult<Course>> UpdateCourse(Course course)
+        {
+            using (CourseLibraryContext context = new CourseLibraryContext(options))
+            {
+                try
+                {
+                    var author = await AuthorCompiledQueries.GetAuthor.Invoke(context, course.AuthorId);
+                    if (author == null)
+                    {
+                        return new FailedOperationResult<Course>
+                        {
+                            Code = ConstOperationCodes.AUTHOR_NOT_FOUND,
+                        };
+                    }
+                    var foundCourse = await CoursesCompiledQueries.GetCourseById.Invoke(context, course.Id);
+                    if (foundCourse == null)
+                    {
+                        return new FailedOperationResult<Course>
+                        {
+                            Code = ConstOperationCodes.COURSE_NOT_FOUND
+                        };
+                    }
+                    context.Courses.Update(course);
+                    await context.SaveChangesAsync();
+                    return new SuccessOperationResult<Course>
+                    {
+                        Code = ConstOperationCodes.COURSE_UPDATED,
+                        Result = course,
+                    };
+                }
+              catch(Exception e)
+                {
+                    logger.Error($"error in updating course {e.Message}");
+                    return new FailedOperationResult<Course>
+                    {
+                        Code = ConstOperationCodes.FAILED_OPERATION,
                     };
                 }
             }

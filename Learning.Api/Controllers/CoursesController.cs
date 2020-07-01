@@ -108,5 +108,23 @@ namespace Learning.Api.Controllers
 
 
         }
+        [HttpPut]
+        public async Task<IActionResult>UpdateCourse(UpdateCourseDto updateCourseDto)
+        {
+            var course = _mapper.Map<Course>(updateCourseDto);
+            var result = await _courseLibraryService.UpdateCourse(course);
+            if(result.Success)
+            {
+                var successOperation = result as SuccessOperationResult<Course>;
+                var courseDto = _mapper.Map<CourseDto>(successOperation.Result);
+                return Ok(new SuccessOperationResult<CourseDto>
+                {
+                    Code = successOperation.Code,
+                    Result = courseDto,
+                });
+            }
+            var failedOperation = result as FailedOperationResult<Course>;
+            return Ok(failedOperation);
+        }
     }
 }

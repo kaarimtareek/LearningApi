@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Data.DbContexts;
+using Filters;
 using Learning.Api.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,6 +42,7 @@ namespace Learning.Api
             services.AddSingleton<IFilterationService, FilterationService>();
             services.AddSingleton<ICourseLibraryService, CourseLibraryService>();
             services.AddSingleton<ILoggerService, LoggerService>();
+            services.AddScoped<ValidAuthorRequestActionAttribute>();
             services.AddControllers();
         }
 
