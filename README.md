@@ -19,5 +19,8 @@ the upcoming features:
   - supports error and success codes.
   - add put verb for updating entities.
   - jwt token.
+  - caching.
+  - hateoas.
+  - unit testing.
  
 if you have any suggestions for improving the api please let me know .
