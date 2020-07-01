@@ -18,7 +18,7 @@ namespace Services.CourseLibraryService
   
         OperationResult<PaginationList<Author>> GetAuthors(AuthorsQueryParamters queryParamters);
         Task<OperationResult<PaginationList<Course>>> GetCourses(CoursesQueryParameters queryParameters);
-        Task<OperationResult<IEnumerable<Course>>> GetCourses(Guid authorId);
+        Task<OperationResult<IEnumerable<Course>>> GetCoursesForAuthor(Guid authorId);
         OperationResult<PaginationList<Course>> GetCourses(CoursesQueryParameters queryParameters, Guid authorId);
         Task<OperationResult<Course>> GetCourseById(Guid courseId);
         Task<OperationResult<Course>> AddCourse(Course course);

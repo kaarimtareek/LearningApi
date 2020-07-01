@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.CompiledQueries;
 using Services.FilterationService;
 using Services.LoggerService;
+using Services.OperationCodes;
 using Services.PaginationService;
 using Services.ResultObject;
 using System;
@@ -51,7 +52,7 @@ namespace Services.CourseLibraryService
                     {
                         return new SuccessOperationResult<Author>
                         {
-                            Success = true,
+                            Code = ConstOperationCodes.AUTHOR_FOUND,
                             Result = author
                         };
                     }
@@ -59,7 +60,7 @@ namespace Services.CourseLibraryService
                     {
                         return new FailedOperationResult<Author>
                         {
-
+                            Code = ConstOperationCodes.AUTHOR_NOT_FOUND
                         };
                     }
                     
@@ -69,7 +70,7 @@ namespace Services.CourseLibraryService
                     logger.Error($"error in course library context getting author {e.Message}");
                     return new FailedOperationResult<Author>
                     {
-                       
+                        Code = ConstOperationCodes.FAILED_OPERATION  
                     };
                 }
                
@@ -86,7 +87,7 @@ namespace Services.CourseLibraryService
                     var authors = AuthorCompiledQueries.GetAuthors.Invoke(context);
                     return new SuccessOperationResult<IEnumerable<Author>>
                     {
-                        Success = true,
+                        Code = ConstOperationCodes.SUCCESS_OPERATION,
                         Result = authors
                     };
                 }catch(Exception e)
@@ -95,7 +96,7 @@ namespace Services.CourseLibraryService
                     return new FailedOperationResult<IEnumerable<Author>>
                     {
                         
-                        
+                        Code = ConstOperationCodes.FAILED_OPERATION
                     };
                 }
                 
@@ -130,7 +131,8 @@ namespace Services.CourseLibraryService
                     PaginationList<Author> result =  PaginationList<Author>.CreatePagination(collection, queryParamters.PageSize, queryParamters.PageNumber);
                     return new SuccessOperationResult<PaginationList<Author>>
                     { 
-                        Result = result
+                        Result = result,
+                        Code = ConstOperationCodes.SUCCESS_OPERATION
                     };
                 }
             }
@@ -139,7 +141,7 @@ namespace Services.CourseLibraryService
                 logger.Error($"Error in Course library Service GetAuthors : {e}");
                 return new FailedOperationResult<PaginationList<Author>>
                 {
-                    
+                    Code = ConstOperationCodes.FAILED_OPERATION
                 };
             }
 
@@ -167,7 +169,8 @@ namespace Services.CourseLibraryService
                     var courses = PaginationList<Course>.CreatePagination(collection, queryParameters.PageSize, queryParameters.PageNumber);
                     return new SuccessOperationResult<PaginationList<Course>>
                     {
-                        Result = courses
+                        Result = courses,
+                        Code = ConstOperationCodes.SUCCESS_OPERATION
                     };
                 }
                 catch(Exception e)
@@ -175,13 +178,13 @@ namespace Services.CourseLibraryService
                     logger.Error($"error in courses library service get courses : {e.Message}");
                     return new FailedOperationResult<PaginationList<Course>>
                     {
-
+                        Code = ConstOperationCodes.FAILED_OPERATION
                     };
                 }
                 
             }
         }
-        public async Task<OperationResult<IEnumerable<Course>>> GetCourses(Guid authorId)
+        public async Task<OperationResult<IEnumerable<Course>>> GetCoursesForAuthor(Guid authorId)
         {
             using (CourseLibraryContext context = new CourseLibraryContext(options))
             {
@@ -192,14 +195,14 @@ namespace Services.CourseLibraryService
                     {
                         return new FailedOperationResult<IEnumerable<Course>>
                         {
-
+                            Code = ConstOperationCodes.AUTHOR_NOT_FOUND,
                         };
                     }
                     var result = await context.Courses.Where(c => c.AuthorId == authorId).ToListAsync();
                     return new SuccessOperationResult<IEnumerable<Course>> 
                     { 
                         Result = result,
-
+                        Code = ConstOperationCodes.SUCCESS_OPERATION
                     };
                 }
               catch(Exception e)
@@ -207,7 +210,7 @@ namespace Services.CourseLibraryService
                     logger.Error($"error in course library get courses for author {e.Message}");
                     return new FailedOperationResult<IEnumerable<Course>>
                     {
-                        
+                        Code = ConstOperationCodes.FAILED_OPERATION
                     };
                 }
             }
@@ -225,7 +228,7 @@ namespace Services.CourseLibraryService
                     {
                         return new FailedOperationResult<Course>
                         {
-
+                            Code = ConstOperationCodes.COURSE_NOT_FOUND
                         };
                     }
                     return new SuccessOperationResult<Course>
@@ -238,7 +241,7 @@ namespace Services.CourseLibraryService
                     logger.Error($"error in course library context get course by id {e.Message} ");
                     return new FailedOperationResult<Course>
                     {
-
+                        Code = ConstOperationCodes.FAILED_OPERATION,
                     };
                 }
 
@@ -257,14 +260,14 @@ namespace Services.CourseLibraryService
                     {
                         return new FailedOperationResult<Course>
                         {
-                            
+                            Code = ConstOperationCodes.COURSE_NAME_ALREADY_EXISTS
                         };
                     }
                     await context.AddAsync(course);
                     await context.SaveChangesAsync();
                     return new SuccessOperationResult<Course>
                     {
-                        Success = true,
+                       Code = ConstOperationCodes.COURSE_CREATED,
                         Result = course
                     };
                 }
@@ -274,8 +277,7 @@ namespace Services.CourseLibraryService
                     logger.Error("error in adding course " + e.Message);
                     return new FailedOperationResult<Course>
                     {
-                       
-
+                       Code = ConstOperationCodes.FAILED_OPERATION
                     };
                 }
             }
@@ -300,8 +302,7 @@ namespace Services.CourseLibraryService
                     {
                         return new FailedOperationResult<bool>
                         {
-                            
-
+                            Code = ConstOperationCodes.COURSE_NOT_FOUND,
                         };
                     }
                     var course = await context.Courses.FindAsync(courseId);
@@ -309,7 +310,7 @@ namespace Services.CourseLibraryService
                     await context.SaveChangesAsync();
                     return new SuccessOperationResult<bool>
                     {
-                        
+                        Code = ConstOperationCodes.COURSE_DELETED,
                         Result = true,
                     };
                 }
@@ -318,7 +319,7 @@ namespace Services.CourseLibraryService
                     logger.Error($"error in delete course {e} {e.Message}");
                     return new FailedOperationResult<bool>
                     {
-                       
+                       Code =ConstOperationCodes.FAILED_OPERATION
                     };
                 }
                
