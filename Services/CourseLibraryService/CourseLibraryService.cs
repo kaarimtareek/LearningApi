@@ -325,7 +325,38 @@ namespace Services.CourseLibraryService
                
             }
         }
-   
-        
+
+        public async Task<OperationResult<Author>> AddAuthor(Author author)
+        {
+            using(CourseLibraryContext context = new CourseLibraryContext(options))
+            {
+                try
+                {
+                    bool isAuthorExisted = await AuthorCompiledQueries.IsExistSameAuthorName.Invoke(context, author.FirstName, author.LastName);
+                    if (isAuthorExisted)
+                    {
+                        return new FailedOperationResult<Author>
+                        {
+                            Code = ConstOperationCodes.AUTHOR_NAME_ALREADY_EXISTS,
+                        };
+                    }
+                    await context.Authors.AddAsync(author);
+                    await context.SaveChangesAsync();
+                    return new SuccessOperationResult<Author>
+                    {
+                        Code = ConstOperationCodes.AUTHOR_CREATED,
+                        Result = author
+                    };
+                }
+                catch(Exception e)
+                {
+                    logger.Error($"error in adding author {e.Message}");
+                    return new FailedOperationResult<Author> 
+                    { 
+                        Code = ConstOperationCodes.FAILED_OPERATION
+                    };
+                }
+            }
+        }
     }
 }

@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace DTOs.AuthorDTOs
 {
-    class CreateAuthorDto
+    public class CreateAuthorDto
     {
+        [Required]
+        [MaxLength(50)]
         public string FirstName { get; set; }
+        [Required]
+        [MaxLength(50)]
+
         public string LastName { get; set; }
-        public string Category { get; set; }
+        [Required]
+        [MaxLength(50)]
         public string MainCategory { get; set; }
+        [Required]
         public DateTimeOffset DateOfBirth { get; set; }
     }
 }

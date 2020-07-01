@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using NLog;
 using Services.CourseLibraryService;
 using Services.LoggerService;
+using Services.OperationCodes;
 using Services.PaginationService;
 using Services.ResultObject;
 
@@ -87,6 +88,26 @@ namespace Learning.Api.Controllers
                 loggerService.Error($"Error in Authors Controller GetAuthors {ex}");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+
+        }
+        [HttpPost()]
+        public async Task<IActionResult> AddAuthor([FromBody] CreateAuthorDto createAuthorDto)
+        {
+            Author author = mapper.Map<Author>(createAuthorDto);
+            var result = await courseLibraryService.AddAuthor(author);
+            if(result.Success)
+            {
+                SuccessOperationResult<Author> successOperation = result as SuccessOperationResult<Author>;
+                AuthorDto authorDto = mapper.Map<AuthorDto>(successOperation.Result);
+                return Ok( new SuccessOperationResult<AuthorDto>
+                {
+                    Result = authorDto,
+                    Code = ConstOperationCodes.AUTHOR_CREATED,
+                });
+            }
+            var failedOperation = result as FailedOperationResult<Author>;
+            return Ok(failedOperation);
+
 
         }
     }
