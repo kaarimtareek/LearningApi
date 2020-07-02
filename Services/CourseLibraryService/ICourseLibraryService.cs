@@ -18,11 +18,13 @@ namespace Services.CourseLibraryService
   
         OperationResult<PaginationList<Author>> GetAuthors(AuthorsQueryParamters queryParamters);
         Task<OperationResult<Author>> AddAuthor(Author author);
+        Task<OperationResult<Author>> UpdateAuthor(Author author);
         Task<OperationResult<PaginationList<Course>>> GetCourses(CoursesQueryParameters queryParameters);
         Task<OperationResult<IEnumerable<Course>>> GetCoursesForAuthor(Guid authorId);
         OperationResult<PaginationList<Course>> GetCourses(CoursesQueryParameters queryParameters, Guid authorId);
         Task<OperationResult<Course>> GetCourseById(Guid courseId);
         Task<OperationResult<Course>> AddCourse(Course course);
+        Task<OperationResult<Course>> UpdateCourse(Course course);
         Task<bool> IsCourseExist(Guid courseId);
         Task<OperationResult<bool>> DeleteCourse(Guid courseId);
     }

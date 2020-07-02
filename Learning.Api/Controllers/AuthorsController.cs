@@ -4,10 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DTOs.AuthorDTOs;
+using DTOs.CourseDTOs;
 using DTOs.QueryParamters;
 using Entities;
+using Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using NLog;
 using Services.CourseLibraryService;
@@ -33,6 +36,8 @@ namespace Learning.Api.Controllers
             this.loggerService = loggerService;
         }
         [HttpGet("{id}")]
+        //just for testing nothing important to the flow of the app
+        [ServiceFilter(typeof(ValidAuthorRequestActionAttribute))]
         public async Task<ActionResult<AuthorDto>> GetAuthor(Guid id,[FromQuery] bool withCourses = false )
         {
             var result =await courseLibraryService.GetAuthor(id,withCourses);
@@ -109,6 +114,24 @@ namespace Learning.Api.Controllers
             return Ok(failedOperation);
 
 
+        }
+        [HttpPut()]
+        public async Task<IActionResult> UpdateAuthor(UpdateAuthorDto updateAuthorDto)
+        {
+           var author = mapper.Map<Author>(updateAuthorDto);
+           var result = await courseLibraryService.UpdateAuthor(author);
+            if(result.Success)
+            {
+                var successOperation = result as SuccessOperationResult<Author>;
+                var authorDto = mapper.Map<AuthorDto>(successOperation.Result);
+                return Ok(new SuccessOperationResult<AuthorDto>
+                {
+                    Code = successOperation.Code,
+                    Result = authorDto
+                });
+            }
+            var failedOperation = result as FailedOperationResult<Author>;
+            return Ok(failedOperation);
         }
     }
 }

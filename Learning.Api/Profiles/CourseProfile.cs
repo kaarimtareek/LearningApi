@@ -11,6 +11,7 @@ namespace Learning.Api.Profiles
         {
             CreateMap<CourseDto, Course>().ReverseMap();
             CreateMap<AddCourseDto, Course>().ReverseMap();
+            CreateMap<UpdateCourseDto, Course>().ReverseMap();
         }
     }
 }
