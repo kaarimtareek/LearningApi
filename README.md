@@ -13,11 +13,10 @@ the main features:
   - DTOs.
   - mapping using automapper (from entities to dtos and vice versa).
   - sql server database.
+  - add put verb for updating entities.
+  - supports error and success codes.
   
 the upcoming features:
-
-  - supports error and success codes.
-  - add put verb for updating entities.
   - jwt token.
   - caching.
   - hateoas.
