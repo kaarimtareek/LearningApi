@@ -33,5 +33,7 @@ namespace Services.CompiledQueries
 
         public static readonly Func<CourseLibraryContext, string, string, Task<bool>> IsExistSameAuthorName =
             EF.CompileAsyncQuery((CourseLibraryContext context, string firstName, string lastName) => context.Authors.Any(a => a.FirstName == firstName && a.LastName == lastName));
+        public static readonly Func<CourseLibraryContext, Guid, Task<bool>> IsAuthorExist =
+            EF.CompileAsyncQuery((CourseLibraryContext context,Guid id)=> context.Authors.Any(a=>a.Id == id));
     }
 }

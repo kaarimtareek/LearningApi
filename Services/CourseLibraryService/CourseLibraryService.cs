@@ -366,15 +366,15 @@ namespace Services.CourseLibraryService
             {
                 try
                 {
-                    var resultAuthor = await context.Authors.SingleOrDefaultAsync(a => a.Id == author.Id);
-                    if (resultAuthor == null)
+                    var isAuthorExist = await AuthorCompiledQueries.IsAuthorExist.Invoke(context,author.Id);
+                    if (!isAuthorExist)
                     {
                         return new FailedOperationResult<Author>
                         {
                             Code = ConstOperationCodes.AUTHOR_NOT_FOUND,
                         };
                     }
-
+                    
                     context.Authors.Update(author);
                     await context.SaveChangesAsync();
                     return new SuccessOperationResult<Author>
@@ -408,8 +408,8 @@ namespace Services.CourseLibraryService
                             Code = ConstOperationCodes.AUTHOR_NOT_FOUND,
                         };
                     }
-                    var foundCourse = await CoursesCompiledQueries.GetCourseById.Invoke(context, course.Id);
-                    if (foundCourse == null)
+                    var isCourseExist = await CoursesCompiledQueries.IsCourseExistForAuthor.Invoke(context, course.Id,course.AuthorId);
+                    if (!isCourseExist)
                     {
                         return new FailedOperationResult<Course>
                         {
