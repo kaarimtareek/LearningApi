@@ -15,5 +15,7 @@ namespace DTOs.CourseDTOs
         public string Description { get; set; }
         [Required]
         public Guid Id { get; set; }
+        [Required]
+        public Guid AuthorId { get; set; }
     }
 }

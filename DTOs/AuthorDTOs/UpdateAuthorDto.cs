@@ -15,5 +15,7 @@ namespace DTOs.AuthorDTOs
         public string LastName { get; set; }
         [Required]
         public DateTimeOffset DateOfBirth { get; set; }
+        [Required]
+        public string MainCategory { get; set; }
     }
 }
