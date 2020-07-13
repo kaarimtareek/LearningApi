@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Filters", "Filters\Filters.csproj", "{05E19E7D-32CE-4AEE-AB0B-2C7CAC57468A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XLearningApiUnitTest", "XLearningApiUnitTest\XLearningApiUnitTest.csproj", "{35FE8E28-1C24-4B88-8DA5-D1C728F332C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{1E342B48-E4A8-4BAB-8217-3B67C0EA815E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{05E19E7D-32CE-4AEE-AB0B-2C7CAC57468A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05E19E7D-32CE-4AEE-AB0B-2C7CAC57468A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05E19E7D-32CE-4AEE-AB0B-2C7CAC57468A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35FE8E28-1C24-4B88-8DA5-D1C728F332C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35FE8E28-1C24-4B88-8DA5-D1C728F332C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35FE8E28-1C24-4B88-8DA5-D1C728F332C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35FE8E28-1C24-4B88-8DA5-D1C728F332C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E342B48-E4A8-4BAB-8217-3B67C0EA815E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E342B48-E4A8-4BAB-8217-3B67C0EA815E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E342B48-E4A8-4BAB-8217-3B67C0EA815E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E342B48-E4A8-4BAB-8217-3B67C0EA815E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
