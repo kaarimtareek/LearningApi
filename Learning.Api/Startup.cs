@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Data.DbContexts;
 using Filters;
 using Learning.Api.Middlewares;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +16,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Services.CourseLibraryService;
 using Services.FilterationService;
 using Services.LoggerService;
@@ -38,6 +42,32 @@ namespace Learning.Api
                 options =>
                 options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=LearningDb;Trusted_Connection=True;")
                 );
+            var key = Encoding.ASCII.GetBytes(Configuration.GetSection("Jwt:Key").Value);
+            services.AddAuthentication(
+                x =>
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }
+                )
+                .AddJwtBearer(
+                Options =>
+                {
+                    Options.RequireHttpsMetadata = false;
+                    Options.SaveToken = true;
+                    Options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                       
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                       RequireExpirationTime = true,
+
+                    };
+                }
+            );
+              
             services.AddSingleton<IPropertyMappingService, PropertyMappingService>();
             services.AddSingleton<IFilterationService, FilterationService>();
             services.AddSingleton<ICourseLibraryService, CourseLibraryService>();
@@ -53,12 +83,17 @@ namespace Learning.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-           
-            app.UseRouting();
-
-            app.UseAuthorization();
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<ResponseLoggingMiddleware>();
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
+            app.UseRouting();
+            app.UseAuthorization();
+           
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseEndpoints(endpoints =>
             {
