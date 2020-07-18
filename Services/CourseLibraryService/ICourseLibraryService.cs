@@ -1,5 +1,4 @@
-﻿using DTOs.AuthorDTOs;
-using DTOs.CourseDTOs;
+﻿using Data.Entities;
 using DTOs.QueryParamters;
 using Entities;
 using Services.PaginationService;
@@ -27,5 +26,10 @@ namespace Services.CourseLibraryService
         Task<OperationResult<Course>> UpdateCourse(Course course);
         Task<bool> IsCourseExist(Guid courseId);
         Task<OperationResult<bool>> DeleteCourse(Guid courseId);
+        Task<OperationResult<User>> AddUser(User user);
+        Task<OperationResult<User>> GetUserById(Guid id);
+        Task<OperationResult<bool>> DeleteUser(Guid Id);
+        Task<OperationResult<User>> UpdateUser(User user);
+
     }
 }

@@ -30,6 +30,20 @@ namespace Services.OperationCodes
         public static readonly string COURSE_NOT_FOUND = "COURSE_104";
         public static readonly string COURSE_NAME_ALREADY_EXISTS = "COURSE_105";
         #endregion
+
+        #region USER_CODES
+        public static readonly string USER_CREATED = "USER_100";
+        public static readonly string USER_FOUND = "USER_101";
+        public static readonly string USER_DELETED = "USER_102";
+        public static readonly string USER_UPDATED = "USER_103";
+        public static readonly string USER_NOT_FOUND = "USER_104";
+        public static readonly string USER_PHONE_ALREADY_EXISTS = "USER_105";
+        public static readonly string USER_EMAIL_ALREADY_EXISTS = "USER_106";
+        #endregion
+
+        #region COUNTRY_CODES
+        public static readonly string INVALID_COUNTRY = "COUNTRY_104";
+        #endregion
     }
 
 }

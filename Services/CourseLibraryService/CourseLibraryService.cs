@@ -1,4 +1,5 @@
 ﻿using Data.DbContexts;
+using Data.Entities;
 using DTOs.AuthorDTOs;
 using DTOs.CourseDTOs;
 using DTOs.QueryParamters;
@@ -428,6 +429,166 @@ namespace Services.CourseLibraryService
                 {
                     logger.Error($"error in updating course {e.Message}");
                     return new FailedOperationResult<Course>
+                    {
+                        Code = ConstOperationCodes.FAILED_OPERATION,
+                    };
+                }
+            }
+        }
+
+        public async Task<OperationResult<User>> AddUser(User user)
+        {
+            using (CourseLibraryContext context = new CourseLibraryContext(options))
+            {
+                try
+                {
+                    bool isPhoneExists = await UserCompiledQueries.IsPhoneNumberExists.Invoke(context, user.PhoneNumber);
+                    if (isPhoneExists)
+                    {
+                        return new FailedOperationResult<User>
+                        {
+                            Code = ConstOperationCodes.USER_PHONE_ALREADY_EXISTS
+                        };
+                    }
+                    bool isEmailExists = await UserCompiledQueries.IsEmailExists.Invoke(context, user.Email);
+                    if (isEmailExists)
+                    {
+                        return new FailedOperationResult<User>
+                        {
+                            Code = ConstOperationCodes.USER_EMAIL_ALREADY_EXISTS
+                        };
+                    }
+                    var country = await context.Countries.FirstOrDefaultAsync(c => c.Iso == user.CountryIso);
+                    if (country == null)
+                    {
+                        return new FailedOperationResult<User>
+                        {
+                            Code = ConstOperationCodes.INVALID_COUNTRY
+                        };
+                    }
+                    user.Country = country;
+                    await context.Users.AddAsync(user);
+                    await context.SaveChangesAsync();
+                    return new SuccessOperationResult<User>
+                    {
+                        Code = ConstOperationCodes.USER_CREATED,
+                        Result = user
+                    };
+                }
+                catch(Exception e)
+                {
+                    logger.Error("Error adding user : " + e.Message);
+                    return new FailedOperationResult<User>
+                    {
+                        Code = ConstOperationCodes.FAILED_OPERATION,
+                        Message = e.Message
+                    };
+                }
+              
+            }
+        }
+        public async Task<OperationResult<User>> GetUserById(Guid id)
+        {
+            using (CourseLibraryContext context = new CourseLibraryContext(options))
+            {
+                try
+                {
+                    var user = await UserCompiledQueries.GetUserById.Invoke(context, id);
+                    if (user == null)
+                    {
+                        return new FailedOperationResult<User>
+                        {
+                            Code = ConstOperationCodes.USER_NOT_FOUND
+                        };
+                    }
+                    return new SuccessOperationResult<User>
+                    {
+                        Code = ConstOperationCodes.USER_FOUND,
+                        Result = user,
+                    };
+                }
+                catch (Exception e)
+                {
+                    logger.Error($"Error getting user with id {id} : {e.Message}");
+                    return new FailedOperationResult<User>
+                    {
+                        Code = ConstOperationCodes.FAILED_OPERATION,
+                    };
+                }
+            }
+        }
+        public async Task<OperationResult<bool>> DeleteUser(Guid Id)
+        {
+            using (CourseLibraryContext context = new CourseLibraryContext(options))
+            {
+                try
+                {
+                    var user = await UserCompiledQueries.GetUserById.Invoke(context, Id);
+                    if (user == null)
+                    {
+                        return new FailedOperationResult<bool>
+                        {
+                            Code = ConstOperationCodes.USER_NOT_FOUND
+                        };
+                    }
+                    context.Users.Remove(user);
+                    await context.SaveChangesAsync();
+                    return new SuccessOperationResult<bool>
+                    {
+                        Code = ConstOperationCodes.USER_DELETED,
+                        Result = true,
+                    };
+                }
+                catch (Exception e)
+                {
+                    logger.Error($"Error getting user with id {Id} : {e.Message}");
+                    return new FailedOperationResult<bool>
+                    {
+                        Code = ConstOperationCodes.FAILED_OPERATION,
+                    };
+                }
+            }
+        }
+        public async Task<OperationResult<User>> UpdateUser(User updatedUser)
+        {
+            using (CourseLibraryContext context = new CourseLibraryContext(options))
+            {
+                try
+                {
+                    User user = await UserCompiledQueries.GetUserById.Invoke(context, updatedUser.Id);
+                    if (user == null)
+                    {
+                        return new FailedOperationResult<User>
+                        {
+                            Code = ConstOperationCodes.USER_NOT_FOUND
+                        };
+                    }
+                    var country = await context.Countries.FirstOrDefaultAsync(c => c.Iso == updatedUser.CountryIso);
+                    if(country ==null)
+                    {
+                        return new FailedOperationResult<User>
+                        {
+                            Code = ConstOperationCodes.INVALID_COUNTRY
+                        };
+                    }
+                    //need to check if the phone number and email are for another user or not
+                    user.Name = updatedUser.Name;
+                    user.PhoneNumber = updatedUser.PhoneNumber;
+                    user.Email = updatedUser.Email;
+                    user.CountryIso = updatedUser.CountryIso;
+                    user.ModifiedAt = DateTime.Now;
+                    //context.Users.Update(user);
+                    await context.SaveChangesAsync();
+                    return new SuccessOperationResult<User>
+                    {
+                        Code = ConstOperationCodes.USER_UPDATED,
+                        Result = user,
+                    };
+                }
+                catch (Exception e)
+                {
+                    logger.Error($"Error updating user with id {updatedUser.Id} : {e.Message}");
+                    return new FailedOperationResult<User>
                     {
                         Code = ConstOperationCodes.FAILED_OPERATION,
                     };
