@@ -20,7 +20,7 @@ namespace DTOs.QueryParamters
             string orderBy = OrderBy ?? "No sorting requested";
             string searchQuery = SearchQuery ?? "No searching requested";
 
-            return $"{this} OrderBy:{orderBy}, SearchQuery:{searchQuery} ,PageNumber :{PageNumber},PageSize :{_PageSize}";
+            return $"Query Paramters OrderBy:{orderBy}, SearchQuery:{searchQuery} ,PageNumber :{PageNumber},PageSize :{_PageSize}";
         }
 
         //public override string ToString() => base.ToString();
