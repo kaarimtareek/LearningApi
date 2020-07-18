@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Data.Entities;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -13,9 +14,13 @@ namespace Data.DbContexts
       
         public DbSet<Author> Authors { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Country> Countries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().Property(e => e.CreatedAt).HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<User>().Property(e => e.ModifiedAt).HasDefaultValueSql("getutcdate()");
             // seed the database with dummy data
             modelBuilder.Entity<Author>().HasData(
                 new Author()
