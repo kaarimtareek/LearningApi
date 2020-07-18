@@ -8,6 +8,7 @@ using DTOs.CourseDTOs;
 using DTOs.QueryParamters;
 using Entities;
 using Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -21,6 +22,7 @@ using Services.ResultObject;
 
 namespace Learning.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthorsController : ControllerBase
@@ -28,12 +30,15 @@ namespace Learning.Api.Controllers
         private readonly ICourseLibraryService courseLibraryService;
         private readonly IMapper mapper;
         private readonly ILoggerService loggerService;
+        
 
         public AuthorsController(ICourseLibraryService courseLibraryService,IMapper mapper,ILoggerService loggerService)
         {
             this.courseLibraryService = courseLibraryService;
             this.mapper = mapper;
             this.loggerService = loggerService;
+            
+            
         }
         [HttpGet("{id}")]
         //just for testing nothing important to the flow of the app

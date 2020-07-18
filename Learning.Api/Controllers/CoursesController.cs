@@ -6,6 +6,7 @@ using AutoMapper;
 using DTOs.CourseDTOs;
 using DTOs.QueryParamters;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.CourseLibraryService;
 using Services.LoggerService;
@@ -14,6 +15,7 @@ using Services.ResultObject;
 
 namespace Learning.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CoursesController : ControllerBase

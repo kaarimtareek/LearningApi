@@ -9,6 +9,7 @@ namespace DTOs.UserDTOs
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
