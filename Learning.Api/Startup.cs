@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Data.DbContexts;
 using Filters;
+using Helpers.Mapper;
 using Learning.Api.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -72,6 +73,7 @@ namespace Learning.Api
             services.AddSingleton<IFilterationService, FilterationService>();
             services.AddSingleton<ICourseLibraryService, CourseLibraryService>();
             services.AddSingleton<ILoggerService, LoggerService>();
+            services.AddSingleton<IMapperHelper, MapperHelper>();
             services.AddScoped<ValidAuthorRequestActionAttribute>();
             services.AddControllers();
         }

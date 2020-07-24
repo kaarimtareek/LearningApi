@@ -6,6 +6,7 @@ using AutoMapper;
 using DTOs.CourseDTOs;
 using DTOs.QueryParamters;
 using Entities;
+using Helpers.Mapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.CourseLibraryService;
@@ -22,8 +23,8 @@ namespace Learning.Api.Controllers
     {
         private readonly ICourseLibraryService _courseLibraryService;
         private readonly ILoggerService _logger;
-        private readonly IMapper _mapper;
-        public CoursesController(ICourseLibraryService courseLibraryService, IMapper mapper, ILoggerService logger)
+        private readonly IMapperHelper _mapper;
+        public CoursesController(ICourseLibraryService courseLibraryService, IMapperHelper mapper, ILoggerService logger)
         {
             _courseLibraryService = courseLibraryService;
             _mapper = mapper;
@@ -36,7 +37,7 @@ namespace Learning.Api.Controllers
             if(result.Success)
             {
                 var successOperation = result as SuccessOperationResult<PaginationList<Course>>;
-                var coursesDto = _mapper.Map<IEnumerable<CourseDto>>(successOperation.Result.ListData);
+                var coursesDto = _mapper.MapTo<IEnumerable<CourseDto>>(successOperation.Result.ListData);
                 var operationReturn = new SuccessOperationResult<IEnumerable<CourseDto>>
                 {
                     Result = coursesDto,
@@ -57,7 +58,7 @@ namespace Learning.Api.Controllers
             if(result.Success)
             {
                 var successOperation = result as SuccessOperationResult<Course>;
-                var courseDto = _mapper.Map<CourseDto>(successOperation.Result);
+                var courseDto = _mapper.MapTo<CourseDto>(successOperation.Result);
                 var operationResult = new SuccessOperationResult<CourseDto>
                 {
                     Result = courseDto,
@@ -76,12 +77,12 @@ namespace Learning.Api.Controllers
         [HttpPost()]
         public async Task<IActionResult> AddCourse([FromBody] AddCourseDto addCourseDto)
         {
-            var course = _mapper.Map<Course>(addCourseDto);
+            var course = _mapper.MapTo<Course>(addCourseDto);
             var result = await _courseLibraryService.AddCourse(course);
             if(result.Success)
             {
                 var successOperation = result as SuccessOperationResult<Course>;
-                var courseDto = _mapper.Map<CourseDto>(successOperation.Result);
+                var courseDto = _mapper.MapTo<CourseDto>(successOperation.Result);
                 var operationReturn = new SuccessOperationResult<CourseDto>
                 {
                     Result = courseDto,
@@ -113,12 +114,12 @@ namespace Learning.Api.Controllers
         [HttpPut]
         public async Task<IActionResult>UpdateCourse(UpdateCourseDto updateCourseDto)
         {
-            var course = _mapper.Map<Course>(updateCourseDto);
+            var course = _mapper.MapTo<Course>(updateCourseDto);
             var result = await _courseLibraryService.UpdateCourse(course);
             if(result.Success)
             {
                 var successOperation = result as SuccessOperationResult<Course>;
-                var courseDto = _mapper.Map<CourseDto>(successOperation.Result);
+                var courseDto = _mapper.MapTo<CourseDto>(successOperation.Result);
                 return Ok(new SuccessOperationResult<CourseDto>
                 {
                     Code = successOperation.Code,

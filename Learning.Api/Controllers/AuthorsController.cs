@@ -8,6 +8,7 @@ using DTOs.CourseDTOs;
 using DTOs.QueryParamters;
 using Entities;
 using Filters;
+using Helpers.Mapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +29,11 @@ namespace Learning.Api.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly ICourseLibraryService courseLibraryService;
-        private readonly IMapper mapper;
+        private readonly IMapperHelper mapper;
         private readonly ILoggerService loggerService;
         
 
-        public AuthorsController(ICourseLibraryService courseLibraryService,IMapper mapper,ILoggerService loggerService)
+        public AuthorsController(ICourseLibraryService courseLibraryService,IMapperHelper mapper,ILoggerService loggerService)
         {
             this.courseLibraryService = courseLibraryService;
             this.mapper = mapper;
@@ -49,7 +50,7 @@ namespace Learning.Api.Controllers
             if(result.Success)
             {
                 var successOperation = result as SuccessOperationResult<Author>;
-                var authorDto = mapper.Map<AuthorDto>(successOperation.Result);
+                var authorDto = mapper.MapTo<AuthorDto>(successOperation.Result);
                 var operationReturn = new SuccessOperationResult<AuthorDto>
                 {
                     Result = authorDto,
@@ -70,7 +71,7 @@ namespace Learning.Api.Controllers
                 if(result.Success)
                 {
                     var successOperation = result as SuccessOperationResult<PaginationList<Author>>;
-                    IEnumerable<AuthorDto> mappingResult = mapper.Map<IEnumerable<AuthorDto>>(successOperation.Result.ListData);
+                    IEnumerable<AuthorDto> mappingResult = mapper.MapTo<IEnumerable<AuthorDto>>(successOperation.Result.ListData);
                     var paginationMetaData = new
                     {
                         totalCount = successOperation.Result.TotalCount,
@@ -103,12 +104,12 @@ namespace Learning.Api.Controllers
         [HttpPost()]
         public async Task<IActionResult> AddAuthor([FromBody] CreateAuthorDto createAuthorDto)
         {
-            Author author = mapper.Map<Author>(createAuthorDto);
+            Author author = mapper.MapTo<Author>(createAuthorDto);
             var result = await courseLibraryService.AddAuthor(author);
             if(result.Success)
             {
                 SuccessOperationResult<Author> successOperation = result as SuccessOperationResult<Author>;
-                AuthorDto authorDto = mapper.Map<AuthorDto>(successOperation.Result);
+                AuthorDto authorDto = mapper.MapTo<AuthorDto>(successOperation.Result);
                 return Ok( new SuccessOperationResult<AuthorDto>
                 {
                     Result = authorDto,
@@ -123,12 +124,12 @@ namespace Learning.Api.Controllers
         [HttpPut()]
         public async Task<IActionResult> UpdateAuthor(UpdateAuthorDto updateAuthorDto)
         {
-           var author = mapper.Map<Author>(updateAuthorDto);
+            Author author = mapper.MapTo<Author>(updateAuthorDto);
            var result = await courseLibraryService.UpdateAuthor(author);
             if(result.Success)
             {
                 var successOperation = result as SuccessOperationResult<Author>;
-                var authorDto = mapper.Map<AuthorDto>(successOperation.Result);
+                AuthorDto authorDto = mapper.MapTo<AuthorDto>(successOperation.Result);
                 return Ok(new SuccessOperationResult<AuthorDto>
                 {
                     Code = successOperation.Code,

@@ -5,8 +5,10 @@ using System.Text;
 
 namespace DTOs.UserDTOs
 {
-    public class CreateUserDto
+    public class UpdateUserDto
     {
+        [Required]
+        public Guid Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

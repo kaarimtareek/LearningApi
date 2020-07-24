@@ -15,7 +15,12 @@ namespace Learning.Api.Profiles
             CreateMap<User, UserDto>()
                 .ForMember(u=>u.Country,o=>o.MapFrom(u=>u.CountryIso))
                 .ReverseMap();
-            CreateMap<CreateUserDto, User>().ForMember(u=>u.CountryIso,o=>o.MapFrom(u=>u.Country));
+            CreateMap<CreateUserDto, User>()
+                .ForMember(u=>u.Country,opt=>opt.Ignore())
+                .ForMember(u=>u.CountryIso,options=>options.MapFrom(u=>u.Country));
+            CreateMap<UpdateUserDto, User>()
+                .ForMember(u => u.Country, opt => opt.Ignore())
+                .ForMember(u => u.CountryIso, options => options.MapFrom(u => u.Country));
         }
     }
 }

@@ -4,6 +4,8 @@ using DTOs.AuthorDTOs;
 using DTOs.CourseDTOs;
 using DTOs.QueryParamters;
 using Entities;
+using Helpers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.CompiledQueries;
@@ -467,6 +469,10 @@ namespace Services.CourseLibraryService
                         };
                     }
                     user.Country = country;
+                    string randomSalt = PasswordHasher.GenerateRandomSalt();
+                  string hashedPassword =  PasswordHasher.GenerateHash(user.Password,randomSalt);
+                    user.Salt = randomSalt;
+                    user.Password = hashedPassword;
                     await context.Users.AddAsync(user);
                     await context.SaveChangesAsync();
                     return new SuccessOperationResult<User>
