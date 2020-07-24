@@ -91,6 +91,12 @@ namespace Learning.Api.Controllers
             }
             return Ok(result);
         }
+        [HttpPut("changePassword")]
+        public async Task<IActionResult> ChangeUserPassword([FromBody]ChangeUserPasswordDto userPasswordDto)
+        {
+            var result = await courseLibraryService.ChangeUserPassword(userPasswordDto);
+            return Ok(result);
+        }
         private string FormatPhoneNumber(string phone)
         {
             if (phone.StartsWith('0')) 

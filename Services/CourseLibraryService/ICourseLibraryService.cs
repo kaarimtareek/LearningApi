@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using DTOs.QueryParamters;
+using DTOs.UserDTOs;
 using Entities;
 using Services.PaginationService;
 using Services.ResultObject;
@@ -30,6 +31,7 @@ namespace Services.CourseLibraryService
         Task<OperationResult<User>> GetUserById(Guid id);
         Task<OperationResult<bool>> DeleteUser(Guid Id);
         Task<OperationResult<User>> UpdateUser(User user);
+        Task<OperationResult<bool>> ChangeUserPassword(ChangeUserPasswordDto userPasswordDto);
 
     }
 }

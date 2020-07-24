@@ -29,5 +29,9 @@ namespace Services.CompiledQueries
         public static Func<CourseLibraryContext, string,string, Task<bool>> IsPhoneNumberOrEmailExists =
             EF.CompileAsyncQuery((CourseLibraryContext context, string phone,string email) =>
             context.Users.Any(u => u.PhoneNumber.Equals(phone) || u.Email.Equals(email)));
+        public static Func<CourseLibraryContext, Guid, string, Task<bool>> IsEmailExistsForDifferentUser =
+            EF.CompileAsyncQuery((CourseLibraryContext context, Guid id, string email) => context.Users.Any(u => u.Id != id && u.Email == email));
+        public static Func<CourseLibraryContext, Guid, string, Task<bool>> IsPhoneExistsForDifferentUser =
+            EF.CompileAsyncQuery((CourseLibraryContext context, Guid id, string phone) => context.Users.Any(u => u.Id != id && u.PhoneNumber == phone));
     }
 }

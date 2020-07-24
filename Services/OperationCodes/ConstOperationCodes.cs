@@ -39,6 +39,8 @@ namespace Services.OperationCodes
         public static readonly string USER_NOT_FOUND = "USER_104";
         public static readonly string USER_PHONE_ALREADY_EXISTS = "USER_105";
         public static readonly string USER_EMAIL_ALREADY_EXISTS = "USER_106";
+        public static readonly string USER_WRONG_PASSWORD = "USER_107";
+        public static readonly string USER_SAME_OLD_PASSWORD = "USER_107";
         #endregion
 
         #region COUNTRY_CODES

@@ -3,6 +3,7 @@ using Data.Entities;
 using DTOs.AuthorDTOs;
 using DTOs.CourseDTOs;
 using DTOs.QueryParamters;
+using DTOs.UserDTOs;
 using Entities;
 using Helpers;
 using Microsoft.AspNetCore.Identity;
@@ -577,6 +578,22 @@ namespace Services.CourseLibraryService
                             Code = ConstOperationCodes.INVALID_COUNTRY
                         };
                     }
+                    bool isEmailExists = await UserCompiledQueries.IsEmailExistsForDifferentUser.Invoke(context, user.Id, updatedUser.Email);
+                    if(isEmailExists)
+                    {
+                        return new FailedOperationResult<User>
+                        {
+                            Code = ConstOperationCodes.USER_EMAIL_ALREADY_EXISTS
+                        };
+                    }
+                    var isPhoneExists = await  UserCompiledQueries.IsPhoneExistsForDifferentUser.Invoke(context, user.Id, updatedUser.PhoneNumber);
+                    if(isPhoneExists)
+                    {
+                        return new FailedOperationResult<User>
+                        {
+                            Code = ConstOperationCodes.USER_PHONE_ALREADY_EXISTS
+                        };
+                    }
                     //need to check if the phone number and email are for another user or not
                     user.Name = updatedUser.Name;
                     user.PhoneNumber = updatedUser.PhoneNumber;
@@ -597,6 +614,57 @@ namespace Services.CourseLibraryService
                     return new FailedOperationResult<User>
                     {
                         Code = ConstOperationCodes.FAILED_OPERATION,
+                    };
+                }
+            }
+        }
+
+        public async Task<OperationResult<bool>> ChangeUserPassword(ChangeUserPasswordDto userPasswordDto)
+        {
+            using (CourseLibraryContext context = new CourseLibraryContext(options))
+            {
+                try
+                {
+                    var user = await UserCompiledQueries.GetUserById.Invoke(context, userPasswordDto.Id);
+                    if(user==null)
+                    {
+                        return new FailedOperationResult<bool>
+                        {
+                            Code = ConstOperationCodes.USER_NOT_FOUND
+                        };
+                    }
+                    bool isValidPassword = PasswordHasher.IsHashMatched(userPasswordDto.OldPassword, user.Salt, user.Password);
+                    if (!isValidPassword)
+                    {
+                        return new FailedOperationResult<bool>
+                        {
+                            Code = ConstOperationCodes.USER_WRONG_PASSWORD
+                        };
+                    }
+                    bool isSamePassword = PasswordHasher.IsHashMatched(userPasswordDto.NewPassword, user.Salt, user.Password);
+                    if(isSamePassword)
+                    {
+                        return new FailedOperationResult<bool>
+                        {
+                            Code = ConstOperationCodes.USER_SAME_OLD_PASSWORD
+                        };
+                    }
+                    //should i use same salt or generate new salt for the new password
+                    string newPasswordHash = PasswordHasher.GenerateHash(userPasswordDto.NewPassword, user.Salt);
+                    user.Password = newPasswordHash;
+                    await context.SaveChangesAsync();
+                    return new SuccessOperationResult<bool>
+                    {
+                        Code = ConstOperationCodes.USER_UPDATED,
+                        Result = true
+                    };
+                }
+                catch(Exception e)
+                {
+                    logger.Error("error in changing user password " + e.Message);
+                    return new FailedOperationResult<bool>
+                    {
+                        Code = ConstOperationCodes.FAILED_OPERATION
                     };
                 }
             }
